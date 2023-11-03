@@ -30,7 +30,15 @@ class PulsarRunnerView {
 
     let statusEle = document.createElement("span");
     statusEle.classList.add("status");
-    statusEle.textContent = this.getExitMsg();
+
+    let exitCode = this.state.state.command.status;
+    if (exitCode === 0) {
+      statusEle.textContent = "Completed Successfully";
+      statusEle.classList.add("inline-block", "highlight-success");
+    } else {
+      statusEle.textContent = `Failed with Exit Code: ${exitCode}`;
+      statusEle.classList.add("inline-block", "highlight-error");
+    }
 
     let timeEle = document.createElement("span");
     timeEle.classList.add("time");
@@ -114,15 +122,6 @@ class PulsarRunnerView {
   getTotalTime() {
     let totalTime = this.state.state.setup.elapsedTime + this.state.state.command.elapsedTime;
     return totalTime.toFixed(2);
-  }
-
-  getExitMsg() {
-    let exitCode = this.state.state.command.status;
-    if (exitCode === 0) {
-      return "Completed Successfully";
-    } else {
-      return `Failed with Exit Code: ${exitCode}`
-    }
   }
 
   getElement() {
