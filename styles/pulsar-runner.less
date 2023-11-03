@@ -1,0 +1,43 @@
+@import "ui-variables";
+
+.pulsar-runner {
+
+  .summary {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    height: 80px;
+    border-top: 0;
+    border-bottom: 1px solid @pane-item-border-color;
+    background-color: @pane-item-background-color;
+
+    .status {
+      display: block;
+    }
+
+    .time {
+      display: block;
+    }
+  }
+
+  .logs {
+    
+    white-space: pre-wrap;
+
+    .setup {
+
+    }
+
+    .console {
+      background-color: @pane-item-background-color;
+
+      .line {
+        display: flex;
+
+        .line_number {
+          padding-right: 1rem;
+        }
+      }
+    }
+  }
+}

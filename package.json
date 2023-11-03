@@ -11,5 +11,8 @@
   },
   "author": "confused-Techie",
   "repository": "https://github.com/confused-Techie/pulsar-runner",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "uuid": "^9.0.1"
+  }
 }
