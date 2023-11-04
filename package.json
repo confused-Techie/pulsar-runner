@@ -12,6 +12,13 @@
   "author": "confused-Techie",
   "repository": "https://github.com/confused-Techie/pulsar-runner",
   "license": "MIT",
+  "configSchema": {
+    "commandTimeout": {
+      "type": "integer",
+      "default": 300000,
+      "description": "The timeout for running commands in milliseconds."
+    }
+  },
   "dependencies": {
     "uuid": "^9.0.1"
   }

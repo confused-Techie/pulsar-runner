@@ -37,7 +37,15 @@ class PulsarRunnerPackage {
     let id = uri.replace(PulsarRunnerViewURI, "");
 
     // Open the right runner ID
-    return new PulsarRunnerView();
+    let runnerForId;
+
+    for (let i = 0; i < this.runnerIDs.length; i++) {
+      if (id === this.runnerIDs[i].id) {
+        runnerForId = this.runnerIDs[i];
+        break;
+      }
+    }
+    return new PulsarRunnerView(runnerForId);
   }
 
   run() {

@@ -35,17 +35,28 @@ class PulsarRunnerView {
     if (exitCode === 0) {
       statusEle.textContent = "Completed Successfully";
       statusEle.classList.add("inline-block", "highlight-success");
-    } else {
+    } else if (typeof exitCode === "number") {
       statusEle.textContent = `Failed with Exit Code: ${exitCode}`;
+      statusEle.classList.add("inline-block", "highlight-error");
+    } else if (typeof this.state.state.command.error?.code === "string") {
+      statusEle.textContent = `Failed with Error: ${this.state.state.command.error.code}`;
+      statusEle.classList.add("inline-block", "highlight-error");
+    } else {
+      statusEle.textContent = `Seems to have failed`;
       statusEle.classList.add("inline-block", "highlight-error");
     }
 
     let timeEle = document.createElement("span");
     timeEle.classList.add("time");
-    timeEle.textContent = `Ran in ${this.getTotalTime()}ms`;
+    timeEle.textContent = `Ran in ${this.getTotalTime()}ms Total`;
+
+    let pidEle = document.createElement("span");
+    pidEle.classList.add("pid");
+    pidEle.textContent = `Process ID: ${this.state.state.command.pid}`;
 
     summaryEle.appendChild(statusEle);
     summaryEle.appendChild(timeEle);
+    summaryEle.appendChild(pidEle);
 
     this.element.appendChild(summaryEle);
 
@@ -78,9 +89,17 @@ class PulsarRunnerView {
 
     cmdCommandEle.appendChild(cmdCommandSummaryEle);
 
-    cmdCommandEle.appendChild(
-      this.createPrettyOutputDom(this.state.state.command.output)
-    );
+    if (typeof this.state.state.command.error?.toString === "function") {
+      // This means we have a valid error object connected, and we should
+      // assume our normal output is useless, and the error is more important
+      cmdCommandEle.appendChild(
+        this.createPrettyOutputDom(this.state.state.command.error.stack)
+      );
+    } else {
+      cmdCommandEle.appendChild(
+        this.createPrettyOutputDom(this.state.state.command.output)
+      );
+    }
 
     cmdEle.appendChild(cmdCommandEle);
 

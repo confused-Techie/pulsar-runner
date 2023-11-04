@@ -1,4 +1,5 @@
 const cp = require("child_process");
+const process = require("process");
 const { performance } = require("perf_hooks");
 
 // Our declared runner types support replacements to certain variables as needed
@@ -6,7 +7,13 @@ const { performance } = require("perf_hooks");
 // Supported Replacements:
 // - filePath: The path to the file we are intending to run
 const runnerTypes = {
-  "js": "node %filePath%"
+  "js": "node %filePath%",
+  "python": "python %filePath%",
+  "go": "go run %filePath%",
+  "powershell": "powershell -file %filePath%",
+  "coffee": "coffee %filePath%",
+  "shell": "bash %filePath%",
+  "ruby": "ruby %filePath%"
 };
 
 module.exports =
@@ -32,7 +39,8 @@ function run() {
 
   const opts = {
     cwd: cwd,
-    timeout: 300000 // TODO: Use config
+    shell: true,
+    timeout: atom.config.get("pulsar-runner.commandTimeout")
   };
 
   let runnerCmdArr = runnerCmd.split(" ");
@@ -40,7 +48,7 @@ function run() {
   for (let i = 0; i < runnerCmdArr.length; i++) {
     // Preform any replacements needed
     if (runnerCmdArr[i] === "%filePath%") {
-      runnerCmdArr[i] = filePath;
+      runnerCmdArr[i] = `"${filePath}"`;
     }
   }
 
@@ -85,6 +93,7 @@ function findLanguage() {
   }
 
   // TODO other methods of detection
+  return;
 }
 
 function convertUint8ArrayToString(data) {
