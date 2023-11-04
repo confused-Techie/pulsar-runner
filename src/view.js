@@ -58,7 +58,7 @@ class PulsarRunnerView {
     cmdSetupEle.classList.add("setup");
 
     let cmdSetupSummaryEle = document.createElement("summary");
-    cmdSetupSummaryEle.textContent = "Set Up Runner";
+    cmdSetupSummaryEle.textContent = `Set Up Runner - ${this.state.state.setup.elapsedTime.toFixed(2)}ms`;
 
     cmdSetupEle.appendChild(cmdSetupSummaryEle);
 
@@ -70,10 +70,11 @@ class PulsarRunnerView {
 
     // Command Logs Element
     let cmdCommandEle = document.createElement("details");
+    cmdCommandEle.open = true;
     cmdCommandEle.classList.add("command");
 
     let cmdCommandSummaryEle = document.createElement("summary");
-    cmdCommandSummaryEle.textContent = "Run File";
+    cmdCommandSummaryEle.textContent = `Run File - ${this.state.state.command.elapsedTime.toFixed(2)}ms`;
 
     cmdCommandEle.appendChild(cmdCommandSummaryEle);
 

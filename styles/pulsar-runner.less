@@ -10,6 +10,7 @@
     border-top: 0;
     border-bottom: 1px solid @pane-item-border-color;
     background-color: @pane-item-background-color;
+    margin-left: 1rem;
 
     .status {
       display: block;
@@ -23,20 +24,55 @@
   .logs {
 
     white-space: pre-wrap;
+    margin-left: 1rem;
+
+    summary {
+      font-size: large;
+    }
 
     .setup {
+      padding-top: 3rem;
+    }
 
+    .command {
+      padding-top: 3rem;
     }
 
     .console {
       background-color: @pane-item-background-color;
+      overflow-y: scroll;
 
       .line {
         display: flex;
 
+        box-sizing: border-box;
+        min-width: 1em;
+        text-align: left;
+        position: relative;
+        width: 100%;
+
+
         .line_number {
+          width: 15px;
+          padding-left: 0.5rem;
+          white-space: nowrap;
+          opacity: 0.6;
+          position: relative;
+
           padding-right: 2rem;
+          background-color: @background-color-selected;
+          color: @text-color-selected;
         }
+
+        .line_content {
+          margin-left: 0.5rem;
+          margin-right: 0.5rem;
+          width: 100%;
+        }
+      }
+
+      .line:hover {
+        background-color: @background-color-highlight;
       }
     }
   }

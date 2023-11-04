@@ -52,7 +52,13 @@ class PulsarRunnerPackage {
 
     runnerObject.state = run();
     console.log(runnerObject);
-    
+
+    if (runnerObject.state === undefined) {
+      // Then it failed to return anything, and should
+      // handle itself via a notification error message
+      return;
+    }
+
     this.runnerIDs.push(runnerObject);
 
     let view = new PulsarRunnerView(runnerObject);
