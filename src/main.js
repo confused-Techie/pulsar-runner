@@ -70,6 +70,7 @@ class PulsarRunnerPackage {
     this.runnerIDs.push(runnerObject);
 
     let view = new PulsarRunnerView(runnerObject);
+    
     atom.workspace.open(view);
   }
 

@@ -1,6 +1,7 @@
 const cp = require("child_process");
 const process = require("process");
 const { performance } = require("perf_hooks");
+const path = require("path");
 
 // Our declared runner types support replacements to certain variables as needed
 // so that we can ensure we are running this exactly as expected.
@@ -13,7 +14,10 @@ const runnerTypes = {
   "powershell": "powershell -file %filePath%",
   "coffee": "coffee %filePath%",
   "shell": "bash %filePath%",
-  "ruby": "ruby %filePath%"
+  "ruby": "ruby %filePath%",
+  "perl": "perl %filePath%",
+  "perl6": "perl %filePath%",
+  "swift": "swift run %rootFolderOnly%"
 };
 
 module.exports =
@@ -49,6 +53,9 @@ function run() {
     // Preform any replacements needed
     if (runnerCmdArr[i] === "%filePath%") {
       runnerCmdArr[i] = `"${filePath}"`;
+    }
+    if (runnerCmdArr[i] === "%rootFolderOnly%") {
+      runnerCmdArr[i] = `${path.basename(path.dirname(filePath))}`;
     }
   }
 
