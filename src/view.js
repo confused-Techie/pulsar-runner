@@ -84,9 +84,6 @@ class PulsarRunnerView {
     let runnerCmd = runner.findRunner();
 
     if (typeof runnerCmd !== "string") {
-      // we originally made a notification. Lets instead add to our view
-      // The simplest way to get this error message into our view, is to manually
-      // add the data to the 'state' object and just lie
       this.state.setup.detectedRunner = "not_identified";
       this.state.command.output = "Unable to identify the runner to use.";
       this.state.command.status = 1;
