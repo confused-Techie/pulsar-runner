@@ -22,6 +22,7 @@ class PulsarRunnerView {
     this.comps = {
       statusComp: null,
       timeComp: null,
+      loaderComp: null,
       setupCmd: null,
       setupSummary: null,
       commandCmd: null,
@@ -178,10 +179,17 @@ class PulsarRunnerView {
     this.comps.statusComp.classList.add("status");
     this.comps.textContent = "In Progress...";
 
+    this.comps.loaderComp = document.createElement("div");
+    this.comps.loaderComp.classList.add("block");
+    let prog = document.createElement("progress");
+    prog.classList.add("inline-block");
+    this.comps.loaderComp.appendChild(prog);
+
     this.comps.timeComp = document.createElement("span");
     this.comps.timeComp.classList.add("time");
     this.comps.timeComp.textContent = "...";
 
+    summaryEle.appendChild(this.comps.loaderComp);
     summaryEle.appendChild(this.comps.statusComp);
     summaryEle.appendChild(this.comps.timeComp);
 
@@ -219,9 +227,10 @@ class PulsarRunnerView {
   }
 
   redrawSummaryElement() {
-    console.log(`Summary: ${this.state.setup.elapsedTime} (${typeof this.state.setup.elapsedTime}) - ${this.state.command.elapsedTime} (${this.state.command.elaspedTime})`);
+    //this.element.removeNode(this.comps.loaderComp);
+    this.comps.loaderComp.remove();
+
     if (typeof this.state.setup.elapsedTime === "number" && typeof this.state.command.elapsedTime === "number") {
-      console.log("Summary element");
       this.comps.timeComp.textContent = `Run in ${this.getTotalTime()}ms Total`;
       // If we have a total time we can safely assume the exit code should be available
       let exitCode = this.state.command.status;
@@ -251,7 +260,7 @@ class PulsarRunnerView {
 
   redrawCommandElement() {
     if (typeof this.state.command.elapsedTime === "number") {
-      this.comps.commandSummary.textContent = `Setup File - ${this.state.command.elapsedTime.toFixed(2)}ms`;
+      this.comps.commandSummary.textContent = `Run File - ${this.state.command.elapsedTime.toFixed(2)}ms`;
     }
     // Then we will draw the inner text no matter what
     if (this.comps.commandOutput !== null) {
