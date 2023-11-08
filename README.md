@@ -4,6 +4,8 @@ Runs code in Pulsar!
 
 Provides the ability to run a file of code.
 
+![Example Preview](./assets/preview.png)
+
 ## Supported Runners
 
 A runner is determined either by the grammar used to apply Syntax Highlighting to a file you are within, or it is determined by the extension of your current file.
