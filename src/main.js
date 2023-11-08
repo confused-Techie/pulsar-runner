@@ -1,6 +1,5 @@
 const { CompositeDisposable } = require("atom");
 const { v4: uuidv4 } = require("uuid");
-const run = require("./runner.js");
 const PulsarRunnerView = require("./view.js");
 
 const PulsarRunnerViewURI = "atom://pulsar-runner/";
@@ -51,25 +50,16 @@ class PulsarRunnerPackage {
   run() {
     // TODO: We will want to support keeping runs for the same file
     // while alternatively supporting only unique runs per file
+    let view = new PulsarRunnerView();
+
     let runnerObject = {
       id: uuidv4(),
-      state: null,
+      state: view,
       filepath: atom.workspace.getActiveTextEditor().getPath(),
       file: atom.workspace.getActivePaneItem().getTitle()
     };
 
-    //runnerObject.state = run();
-    console.log(runnerObject);
-
-    if (runnerObject.state === undefined) {
-      // Then it failed to return anything, and should
-      // handle itself via a notification error message
-      return;
-    }
-
     this.runnerIDs.push(runnerObject);
-
-    let view = new PulsarRunnerView(runnerObject);
 
     atom.workspace.open(view);
   }

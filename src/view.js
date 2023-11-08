@@ -7,10 +7,12 @@ const runner = require("./runner.js");
 
 module.exports =
 class PulsarRunnerView {
-  constructor(state) {
-    this.state = state;
+  constructor(view) {
     this.disposables = new CompositeDisposable();
-    this.title = `${this.state.file} - Pulsar Runner`;
+    this.file = view?.file ?? atom.workspace.getActivePaneItem().getTitle();
+    this.filepath = view?.filepath ?? atom.workspace.getActiveTextEditor().getPath();
+    this.title = view?.title ?? `${this.file} - Pulsar Runner`;
+
     // Create root element
     this.element = null;
     this.setupRootElement();
@@ -26,6 +28,10 @@ class PulsarRunnerView {
       commandSummary: null,
       commandOutput: null
     };
+
+    if (view?.comps) {
+      this.comps = view.comps;
+    }
 
     // Command Items
     this.setupStartTime = 0;
@@ -51,10 +57,22 @@ class PulsarRunnerView {
     };
 
     this.setupRootPane();
-    this.setupSpawn();
+
+    if (view?.state) {
+      this.state = view.state;
+      this.redrawSetupElement();
+      this.redrawCommandElement();
+      this.redrawSummaryElement();
+    } else {
+      this.setupSpawn();
+    }
   }
 
   destroy() {
+    if (typeof this.cli?.abort === "function") {
+      // Ensures that closing the panel to a running process will kill it
+      this.cli.abort();
+    }
     this.disposables.dispose();
     this.element.remove();
   }
@@ -63,20 +81,33 @@ class PulsarRunnerView {
     this.setupStartTime = performance.now();
 
     let filePath = atom.workspace.getActiveTextEditor().getPath();
-    let runnerCmd = runner.findLanguage();
+    let runnerCmd = runner.findRunner();
 
     if (typeof runnerCmd !== "string") {
       // we originally made a notification. Lets instead add to our view
+      // The simplest way to get this error message into our view, is to manually
+      // add the data to the 'state' object and just lie
+      this.state.setup.detectedRunner = "not_identified";
+      this.state.command.output = "Unable to identify the runner to use.";
+      this.state.command.status = 1;
+      this.redrawSetupElement();
+      this.redrawCommandElement();
+      this.redrawSummaryElement();
+      return;
     }
 
     // TODO: Find the path matching the file we are running, among all directories,
     // don't assume the first
     let cwd = atom.project.getDirectories()[0].realPath;
 
+    const controller = new AbortController();
+    const { signal } = controller;
+
     const opts = {
       cwd: cwd,
       shell: true,
-      timeout: atom.config.get("pulsar-runner.commandTimeout")
+      timeout: atom.config.get("pulsar-runner.commandTimeout"),
+      signal: signal
     };
 
     let runnerCmdArr = runnerCmd.split(" ");
@@ -87,7 +118,7 @@ class PulsarRunnerView {
         runnerCmdArr[i] = `"${filePath}"`;
       }
       if (runnerCmdArr[i] === "%rootFolderOnly%") {
-        runnerCmdArr[i] = `${path.basename(path.direname(filePath))}`;
+        runnerCmdArr[i] = `${path.basename(path.dirname(filePath))}`;
       }
     }
 
@@ -227,10 +258,13 @@ class PulsarRunnerView {
     }
     // Then we will draw the inner text no matter what
     if (this.comps.commandOutput !== null) {
+      // This isn't the first set of data being drawn. Replace the existing HTML Node
+      // of data with new
       let prev = this.comps.commandOutput;
       this.comps.commandOutput = this.createPrettyOutputDom(this.state.command.output);
       this.comps.commandCmd.replaceChild(this.comps.commandOutput, prev);
     } else {
+      // This is the first set of data being drawn
       this.comps.commandOutput = this.createPrettyOutputDom(this.state.command.output);
       this.comps.commandCmd.appendChild(this.comps.commandOutput);
     }
