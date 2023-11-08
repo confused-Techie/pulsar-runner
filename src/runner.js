@@ -20,7 +20,7 @@ const runnerTypes = {
   "swift": "swift run %rootFolderOnly%"
 };
 
-module.exports =
+//module.exports =
 function run() {
   let setupStart = performance.now();
 
@@ -121,3 +121,7 @@ function convertUint8ArrayToString(data) {
     return data.toString();
   }
 }
+
+module.exports = {
+  findLanguage,
+};

@@ -58,7 +58,7 @@ class PulsarRunnerPackage {
       file: atom.workspace.getActivePaneItem().getTitle()
     };
 
-    runnerObject.state = run();
+    //runnerObject.state = run();
     console.log(runnerObject);
 
     if (runnerObject.state === undefined) {
@@ -70,7 +70,7 @@ class PulsarRunnerPackage {
     this.runnerIDs.push(runnerObject);
 
     let view = new PulsarRunnerView(runnerObject);
-    
+
     atom.workspace.open(view);
   }
 
